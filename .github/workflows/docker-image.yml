@@ -1,0 +1,14 @@
+name: Docker Image CI test
+
+on:
+  push:
+    branches: [ dockerfile ]
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build the Docker image
+      run: docker build . -f Dockerfile -t test
