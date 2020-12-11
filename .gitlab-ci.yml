@@ -1,0 +1,13 @@
+stages:
+  - build
+  - deliver
+
+build:
+  stage: build
+  script:
+    - docker build -t arch-selinux-build .
+
+deliver:
+  stage: deliver
+  script:
+    - docker run -v "$(pwd)/pkgs:/packages" --rm arch-selinux-build
