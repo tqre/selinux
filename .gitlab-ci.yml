@@ -13,6 +13,9 @@ package:
     mkdir pkgs
     docker run -v "$(pwd)/pkgs:/packages" --rm arch-selinux-build
     repo-add pkgs/selinux-testing.db.tar.xz pkgs/*
+    for file in $(ls pkgs/ -1); do    
+      curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --insecure --upload-file pkgs/$file "https://gitlab.tqre.fi/api/v4/projects/${CI_PROJECT_ID}/packages/generic/selinux-testing/0.0.1/$file"
+    done
 
   artifacts:
     paths:
