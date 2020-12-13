@@ -155,76 +155,76 @@ do
 done
 
 # SELinux userspace packages
-build_and_install libsepol
-build_and_install libselinux
-build_and_install checkpolicy
-build_and_install secilc
+#build_and_install libsepol
+#build_and_install libselinux
+#build_and_install checkpolicy
+#build_and_install secilc
 # setools 3.3.8-5 Makefile has dependencies issues when installing __init__.py for qpol
 # (install command can be invoked before the destination directory is created)
-build_and_install setools MAKEFLAGS="-j1"
-build_and_install libsemanage
-build_and_install mcstrans
-build_and_install policycoreutils
-build_and_install semodule-utils
-build_and_install restorecond
-build_and_install selinux-python
-build_and_install selinux-gui
-build_and_install selinux-dbus-config
-build_and_install selinux-sandbox
+#build_and_install setools MAKEFLAGS="-j1"
+#build_and_install libsemanage
+#build_and_install mcstrans
+#build_and_install policycoreutils
+##build_and_install semodule-utils
+#build_and_install restorecond
+#build_and_install selinux-python
+#build_and_install selinux-gui
+#build_and_install selinux-dbus-config
+#build_and_install selinux-sandbox
 
 # setoubleshoot
-install_libreport
+#install_libreport
 #build_and_install setroubleshoot
 
 # pacman hook
-build_and_install selinux-alpm-hook
+#build_and_install selinux-alpm-hook
 
 # Core packages with SELinux support
-build_and_install pambase-selinux
-build_and_install pam-selinux
-build_and_install coreutils-selinux
-build_and_install findutils-selinux
-build_and_install iproute2-selinux
-build_and_install logrotate-selinux
-build_and_install openssh-selinux
-build_and_install psmisc-selinux
-build_and_install shadow-selinux
-build_and_install cronie-selinux
+#build_and_install pambase-selinux
+#build_and_install pam-selinux
+#build_and_install coreutils-selinux
+#build_and_install findutils-selinux
+#build_and_install iproute2-selinux
+#build_and_install logrotate-selinux
+#build_and_install openssh-selinux
+#build_and_install psmisc-selinux
+#build_and_install shadow-selinux
+#build_and_install cronie-selinux
 
-if needs_install sudo-selinux
-then
-    # sudo is special because /etc/sudoers gets deleted in the process
-    # If we are not careful, this is a way to be locked out of a machine
-    build sudo-selinux
-    if [ -e "/etc/sudoers.pacsave" ]
-    then
-        echo >&2 'Ugh, /etc/sudoers.pacsave exists. Aborting now before breaking the system!'
-        exit 1
-    fi
-    run_conflictual_install sh -c \
-        '{ pacman -U sudo-selinux/sudo-selinux-*'"$PKGEXT"' && if test -e /etc/sudoers.pacsave ; then mv /etc/sudoers.pacsave /etc/sudoers ; fi }'
-fi
+#if needs_install sudo-selinux
+#then
+#    # sudo is special because /etc/sudoers gets deleted in the process
+#    # If we are not careful, this is a way to be locked out of a machine
+#    build sudo-selinux
+#    if [ -e "/etc/sudoers.pacsave" ]
+#    then
+#        echo >&2 'Ugh, /etc/sudoers.pacsave exists. Aborting now before breaking the system!'
+#        exit 1
+#    fi
+#    run_conflictual_install sh -c \
+#        '{ pacman -U sudo-selinux/sudo-selinux-*'"$PKGEXT"' && if test -e /etc/sudoers.pacsave ; then mv /etc/sudoers.pacsave /etc/sudoers ; fi }'
+#fi
 
 # Handle util-linux/systemd build-time cycle dependency (https://bugs.archlinux.org/task/39767)
-if needs_install util-linux-selinux || needs_install systemd-selinux
-then
-    build util-linux-selinux
-    run_conflictual_install pacman -U util-linux-selinux/util-linux-libs-selinux-*"$PKGEXT"
-    build systemd-selinux
-    run_conflictual_install pacman -U systemd-selinux/systemd-libs-selinux-*"$PKGEXT"
-    build_and_install util-linux-selinux
-    build_and_install systemd-selinux
-fi
-build_and_install dbus-selinux
+#if needs_install util-linux-selinux || needs_install systemd-selinux
+#then
+#    build util-linux-selinux
+#    run_conflictual_install pacman -U util-linux-selinux/util-linux-libs-selinux-*"$PKGEXT"
+#    build systemd-selinux
+#    run_conflictual_install pacman -U systemd-selinux/systemd-libs-selinux-*"$PKGEXT"
+#    build_and_install util-linux-selinux
+#    build_and_install systemd-selinux
+#fi
+#build_and_install dbus-selinux
 
 # Reference policy source package
-build_and_install selinux-refpolicy-src
+#build_and_install selinux-refpolicy-src
 
 # Refpolicy with Arch Linux patches
-build_and_install selinux-refpolicy-arch
+#build_and_install selinux-refpolicy-arch
 
 # Refpolicy git master
-build_and_install selinux-refpolicy-git
+#build_and_install selinux-refpolicy-git
 
 # Build base-selinux and base-devel-selinux meta packages
 
