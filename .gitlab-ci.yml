@@ -24,7 +24,7 @@ package:
 test:
   stage: test
   script: |
-    rm -v /srv/http/selinux-testing/*
+    rm -vf /srv/http/selinux-testing/*
     cp -v pkgs/* /srv/http/selinux-testing/
     repo-add /srv/http/selinux-testing/selinux-testing.db.tar.xz /srv/http/selinux-testing/*
   
