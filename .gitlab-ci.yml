@@ -25,4 +25,5 @@ package:
 test:
   stage: test
   script: |
-    ls -la
+    whoami
+    pwd
