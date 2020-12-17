@@ -1,6 +1,7 @@
 stages:
   - build
   - package
+  - test
 
 build:
   stage: build
@@ -20,3 +21,8 @@ package:
   artifacts:
     paths:
       - pkgs/*
+
+test:
+  stage: test
+  script: |
+    ls -la
