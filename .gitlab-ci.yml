@@ -1,6 +1,7 @@
 stages:
   - build
   - package
+  - test
 
 build:
   stage: build
@@ -12,11 +13,13 @@ package:
   script: |
     mkdir pkgs
     docker run -v "$(pwd)/pkgs:/packages" --rm arch-selinux-build
-    repo-add pkgs/selinux-testing.db.tar.xz pkgs/*
-    for file in $(ls pkgs/ -1); do
-      curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --insecure --upload-file pkgs/$file "https://gitlab.tqre.fi/api/v4/projects/${CI_PROJECT_ID}/packages/generic/${CI_COMMIT_BRANCH}/0.0.${CI_JOB_ID}/$file"
-    done
-
   artifacts:
     paths:
       - pkgs/*
+
+test:
+  stage: test
+  script: |
+    rm -vf /srv/http/selinux-testing/*
+    cp -v pkgs/* /srv/http/selinux-testing/
+    repo-add /srv/http/selinux-testing/selinux-testing.db.tar.xz /srv/http/selinux-testing/*
