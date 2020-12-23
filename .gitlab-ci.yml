@@ -41,23 +41,31 @@ bootstrap qemu image:
 configure qemu image:
   stage: configure_qemu
   script: |
-    arch-chroot qemu
-    echo arch-chroot stuff
+    sudo arch-chroot qemu /bin/bash -c \ '
+    ls -la;
+    whoami;
+    pacman -S htop'
 
 test selinux functionality:
   stage: test_selinux
   script: |
-    echo qemu stuff
+    echo "qemu-system-x86_64"
 
 unmount qemu machine:
   stage: cleanup
   when: always
   allow_failure: true
   script: |
-    sudo umount /dev/loop0
+    sudo umount /dev/loop0p1
 
 detach loop device:
   stage: cleanup
   when: always
   script: |
     sudo losetup -d /dev/loop0
+
+clear build directories with root ownership:
+  stage: cleanup
+  when: always
+  script: |
+    echo "rm -rf qemu/"
