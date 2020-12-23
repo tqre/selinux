@@ -29,4 +29,11 @@ create public testing repo:
 prepare testing environment:
   stage: test
   script: |
-    curl https://mirror.pkgbuild.com/iso/latest/archlinux-$(date +"%Y.%m.01")-x86_64.iso --output arch.iso
+    qemu-img create -f raw archlinux.raw 8G
+    losetup /dev/loop0 -P archlinux.raw
+    parted -s /dev/loop0 mklabel msdos
+    parted -s -a optimal /dev/loop0 mkpart primary 0% 100%
+    parted -s /dev/loop0 set 1 boot on
+    mkfs.ext4 /dev/loop0p1
+    tune2fs -L ROOT /dev/loop0p1
+    mount /dev/loop0p1 /tmp/arch
