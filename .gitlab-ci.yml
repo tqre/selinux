@@ -51,14 +51,32 @@ configure qemu image:
   script: |
     sudo losetup /dev/loop0 -P archlinux.raw
     mkdir mnt
-    sudo mount /dev/loop0p1 /mnt
+    sudo mount /dev/loop0p1 mnt
     sudo arch-chroot mnt /bin/bash -c \
-     'ls -la \;
-      whoami;
-      pwd'
-
+     'ln -sfv /usr/share/zoneinfo/UTC /etc/localtime;
+      hwclock --systohc;
+      sed -i 's/#en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen;
+      locale-gen;
+      echo LANG=en_US.UTF-8 > /etc/locale.conf;
+      echo qemu-arch-selinux > /etc/hostname;
+      echo -e "127.0.0.1 localhost\n::1 localhost" > /etc/hosts;
+      echo -e "[Match]\nName=en*\n[Network]\nDHCP=ipv4" > /etc/systemd/network/dhcp.network;
+      systemctl enable systemd-networkd.service;
+      sed -i "s/#PermitRootLogin prohibit-password/PermitRootLogin yes/" /etc/ssh/sshd_config;
+      sed -i "s/#PermitEmptyPasswords no/PermitEmptyPasswords yes/" /etc/ssh/sshd_config;
+      systemctl enable sshd;
+      sed -i 's/root:x:/root::/' /etc/passwd;
+      grub-install --target=i386-pc /dev/loop0;
+      sed -i 's/GRUB_TIMEOUT=5/GRUB_TIMEOUT=0/' /etc/default/grub;
+      sed -i "/LINUX_DEF/c\GRUB_CMDLINE_LINUX_DEFAULT=\"security=selinux selinux=1 console=ttyS0\"" /etc/default/grub;
+      grub-mkconfig -o /boot/grub/grub.cfg'
     sudo umount mnt
     sudo losetup -d /dev/loop0
+    qemu-img convert -f raw -O qcow2 archlinux.raw archlinux.qcow2
+
+  artifacts:
+    paths:
+      - archlinux.qcow2
 
 test selinux functionality:
   stage: test_selinux
