@@ -36,7 +36,16 @@ bootstrap qemu image:
     sudo tune2fs -L ROOT /dev/loop0p1
     mkdir qemu
     sudo mount /dev/loop0p1 qemu/
-    sudo pacstrap -C pacman.local qemu/ base linux
+    sudo pacstrap -C pacman.local qemu/ base linux grub
+    genfstab -L qemu/ >> qemu/etc/fstab
+    sudo umount /dev/loop0p1
+    sudo losetup -d /dev/loop0
+    qemu-img convert -f raw -O qcow archlinux.raw archlinux.qcow2
+  
+  artifacts:
+    paths: 
+      - archlinux.qcow2
+    
 
 configure qemu image:
   stage: configure_qemu
