@@ -32,7 +32,7 @@ bootstrap qemu image:
     sudo parted /dev/loop0 mklabel msdos
     sudo parted -a optimal /dev/loop0 mkpart primary 0% 100%
     sudo parted -s /dev/loop0 set 1 boot on
-    sudo mkfs.ext4 /dev/loop0p1
+    sudo mkfs -t ext4 /dev/loop0p1
     sudo tune2fs -L ROOT /dev/loop0p1
     mkdir qemu
     sudo mount /dev/loop0p1 qemu/
