@@ -43,6 +43,7 @@ bootstrap qemu image:
 configure qemu image:
   stage: configure_qemu
   script: |
+    arch-chroot /tmp/arch
     echo arch-chroot stuff
 
 test selinux functionality:
