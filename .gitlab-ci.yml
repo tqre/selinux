@@ -50,3 +50,8 @@ test selinux functionality:
   stage: test_selinux
   script: |
     echo "qemu-system-x86_64"
+
+chown all files for cleanup:
+  stage: cleanup
+  script: |
+    sudo chown gitlab-runner:gitlab-runner -R qemu/
