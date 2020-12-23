@@ -82,8 +82,7 @@ configure qemu image:
 label the filesystem:
   stage: configure_selinux
   script: |
-    qemu-img create -f qcow2 -F qcow2 -b archlinux.qcow2 archselinux.qcow2
-    qemu-system-x86_64 archselinux.qcow2 \
+    qemu-system-x86_64 archlinux.qcow2 \
       -net nic -net user,hostfwd=tcp::10022-:22 \
       -nographic -m 1024 &
     sleep 30
@@ -97,7 +96,7 @@ label the filesystem:
 check selinux functionality:
   stage: test_selinux
   script: |
-    qemu-system-x86_64 archselinux.qcow2 \
+    qemu-system-x86_64 archlinux.qcow2 \
       -net nic -net user,hostfwd=tcp::10022-:22 \
       -nographic -m 1024 &
     sleep 30
