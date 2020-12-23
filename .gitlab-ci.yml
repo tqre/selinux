@@ -84,4 +84,6 @@ test selinux functionality:
     qemu-system-x86_64 archlinux.qcow2 \
       -net nic -net user,hostfwd=tcp::10022-:22 \
       -nographic -m 1024 &
+    sleep 20
     ssh -o "StrictHostKeyChecking=no" root@localhost -p 10022 'ls -la /'
+
