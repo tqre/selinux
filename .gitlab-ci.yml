@@ -37,7 +37,7 @@ bootstrap qemu image:
     mkdir qemu
     sudo mount /dev/loop0p1 qemu/
     sudo pacstrap -C pacman.local qemu/ base linux grub
-    genfstab -L qemu/ >> qemu/etc/fstab
+    sudo genfstab -L qemu/ >> qemu/etc/fstab
     sudo umount /dev/loop0p1
     sudo losetup -d /dev/loop0
     qemu-img convert -f raw -O qcow archlinux.raw archlinux.qcow2
