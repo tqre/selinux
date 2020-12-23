@@ -36,7 +36,7 @@ bootstrap qemu image:
     sudo tune2fs -L ROOT /dev/loop0p1
     mkdir qemu
     sudo mount /dev/loop0p1 qemu/
-    sudo pacstrap -C pacman.local qemu/ base linux grub
+    sudo pacstrap -C pacman.local qemu/ base linux grub openssh
     echo "LABEL=ROOT / ext4 rw,relatime 0 1" > fstab  
     sudo mv fstab qemu/etc/fstab
     sudo umount /dev/loop0p1
@@ -81,4 +81,7 @@ configure qemu image:
 test selinux functionality:
   stage: test_selinux
   script: |
-    echo "qemu-system-x86_64"
+    qemu-system-x86_64 archlinux.qcow2 \
+      -net nic -net user,hostfwd=tcp::10022-:22 \
+      -nographic -m 1024 &
+    ssh -o "StrictHostKeyChecking=no" root@localhost -p 10022 'ls -la /'
