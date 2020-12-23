@@ -45,7 +45,6 @@ bootstrap qemu image:
   artifacts:
     paths: 
       - archlinux.qcow2
-    
 
 configure qemu image:
   stage: configure_qemu
