@@ -81,7 +81,7 @@ configure qemu image:
 test selinux functionality:
   stage: test_selinux
   script: |
-    ssh-keygen -R localhost:10022
+    ssh-keygen -R [localhost]:10022
     qemu-system-x86_64 archlinux.qcow2 \
       -net nic -net user,hostfwd=tcp::10022-:22 \
       -nographic -m 1024 &
