@@ -1,7 +1,9 @@
 stages:
   - build
   - package
-  - test
+  - bootstrap_qemu
+  - configure_qemu
+  - test_selinux
   - cleanup
 
 build:
@@ -19,15 +21,14 @@ package:
     paths:
       - pkgs/*
 
-test:
-  stage: test
+bootstrap qemu image:
+  stage: bootstrap_qemu
   script: |
     mkdir -vp /tmp/pkgs
     cp -v pkgs/* /tmp/pkgs
-    repo-add /tmp/pkgs/selinux-testing.db.tar.xz /tmp/pkgs/*
+    repo-add /tmp/pkgs/selinux-testing.db.tar.xz /tmp/pkgs/*.zst
     cp -v /etc/pacman.conf /tmp/pkgs/pacman.local
-    echo -e "[selinux-testing]\nSigLevel = Never\nServer = file:///tmp/pkgs" >> /tmp/pkgs/pacman.local;
-
+    echo -e "[selinux-testing]\nSigLevel = Never\nServer = file:///tmp/pkgs" >> /tmp/pkgs/pacman.local
     qemu-img create -f raw archlinux.raw 8G
     sudo losetup /dev/loop0 -P archlinux.raw
     sudo parted /dev/loop0 mklabel msdos
@@ -37,12 +38,21 @@ test:
     tune2fs -L ROOT /dev/loop0p1
     mkdir /tmp/arch
     sudo mount /dev/loop0p1 /tmp/arch
-
     pacstrap -C /tmp/pkgs/pacman.local /tmp/arch base-selinux linux
 
-unmount loop devices:
+configure qemu image:
+  stage: configure_qemu
+  script: |
+    echo arch-chroot stuff
+
+test selinux functionality:
+  stage: test_selinux
+  script: |
+    echo qemu stuff
+
+cleanup:
   stage: cleanup
   script: |
     umount /tmp/arch
     losetup -d /dev/loop0
-    lsblk
+    rm -rf /tmp/pkgs
