@@ -3,6 +3,7 @@ stages:
   - package
   - public_test_repo
   - test
+  - cleanup
 
 build:
   stage: build
@@ -38,3 +39,8 @@ prepare testing environment:
     mkfs.ext4 /dev/loop0p1
     tune2fs -L ROOT /dev/loop0p1
     mount /dev/loop0p1 /tmp/arch
+
+unmount loop devices:
+  stage: cleanup
+  script: |
+    losetup -d /dev/loop0
