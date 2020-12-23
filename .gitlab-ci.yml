@@ -54,6 +54,6 @@ cleanup:
   stage: cleanup
   when: always
   script: |
-    umount /tmp/arch
-    losetup -d /dev/loop0
+    sudo umount /tmp/arch
+    sudo losetup -d /dev/loop0
     rm -rf /tmp/pkgs
