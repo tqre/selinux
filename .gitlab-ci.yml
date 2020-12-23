@@ -36,14 +36,14 @@ bootstrap qemu image:
     sudo parted -s /dev/loop0 set 1 boot on
     mkfs.ext4 /dev/loop0p1
     tune2fs -L ROOT /dev/loop0p1
-    mkdir /tmp/arch
-    sudo mount /dev/loop0p1 /tmp/arch
-    sudo pacstrap -C /tmp/pkgs/pacman.local /tmp/arch base linux
+    mkdir qemu
+    sudo mount /dev/loop0p1 qemu arch
+    sudo pacstrap -C /tmp/pkgs/pacman.local qemu base linux
 
 configure qemu image:
   stage: configure_qemu
   script: |
-    arch-chroot /tmp/arch
+    arch-chroot qemu
     echo arch-chroot stuff
 
 test selinux functionality:
@@ -55,6 +55,6 @@ cleanup:
   stage: cleanup
   when: always
   script: |
-    sudo umount /tmp/arch
+    sudo umount qemu
     sudo losetup -d /dev/loop0
-    rm -rf /tmp/{pkgs,arch}
+    rm -rf /tmp/pkgs
