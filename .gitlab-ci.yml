@@ -1,6 +1,7 @@
 stages:
   - build
   - package
+  - public_test_repo
   - test
 
 build:
@@ -18,10 +19,14 @@ package:
     paths:
       - pkgs/*
 
-test:
-  stage: test
+public_test_repo:
+  stage: public_test_repo
   script: |
     rm -vf /srv/http/selinux-testing/*
     cp -v pkgs/* /srv/http/selinux-testing/
     repo-add /srv/http/selinux-testing/selinux-testing.db.tar.xz /srv/http/selinux-testing/*
 
+prepare testing environment:
+  stage: test
+  script: |
+    mkdir -v /tmp/{boots,arch}
