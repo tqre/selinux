@@ -37,21 +37,23 @@ bootstrap qemu image:
     mkdir qemu
     sudo mount /dev/loop0p1 qemu/
     sudo pacstrap -C pacman.local qemu/ base linux grub
-    echo -e "LABEL=ROOT / ext4 rw,relatime 0 1" > fstab  
+    echo "LABEL=ROOT / ext4 rw,relatime 0 1" > fstab  
     sudo mv fstab qemu/etc/fstab
-
-    #sudo umount /dev/loop0p1
-    #sudo losetup -d /dev/loop0
-    #qemu-img convert -f raw -O qcow archlinux.raw archlinux.qcow2
+    sudo umount /dev/loop0p1
+    sudo losetup -d /dev/loop0
   
-#  artifacts:
-#    paths: 
-#      - archlinux.qcow2
+  artifacts:
+    paths: 
+      - archlinux.raw
 
 configure qemu image:
   stage: configure_qemu
   script: |
-    echo "arch-chroot"
+    sudo losetup /dev/loop0 -P archlinux.raw
+    sudo arch-chroot /dev/loop0p1 /bin/bash -c \
+     'ls -la \;
+      whoami;
+      pwd'
 
 test selinux functionality:
   stage: test_selinux
