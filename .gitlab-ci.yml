@@ -56,4 +56,4 @@ cleanup:
   script: |
     sudo umount /tmp/arch
     sudo losetup -d /dev/loop0
-    rm -rf /tmp/pkgs
+    rm -rf /tmp/{pkgs,arch}
