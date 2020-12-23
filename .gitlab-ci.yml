@@ -52,6 +52,7 @@ test selinux functionality:
 unmount qemu machine:
   stage: cleanup
   when: always
+  allow_failure: true
   script: |
     sudo umount /dev/loop0
 
