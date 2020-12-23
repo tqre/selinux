@@ -38,7 +38,7 @@ bootstrap qemu image:
     tune2fs -L ROOT /dev/loop0p1
     mkdir /tmp/arch
     sudo mount /dev/loop0p1 /tmp/arch
-    pacstrap -C /tmp/pkgs/pacman.local /tmp/arch base-selinux linux
+    sudo pacstrap -C /tmp/pkgs/pacman.local /tmp/arch base-selinux linux
 
 configure qemu image:
   stage: configure_qemu
