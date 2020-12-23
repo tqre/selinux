@@ -82,22 +82,23 @@ configure qemu image:
 label the filesystem:
   stage: configure_selinux
   script: |
-    ssh-keygen -R [localhost]:10022
-    qemu-system-x86_64 archlinux.qcow2 \
+    qemu-img create -f qcow2 -o backing_file=archlinux.qcow2 archselinux.qcow2
+    qemu-system-x86_64 archselinux.qcow2 \
       -net nic -net user,hostfwd=tcp::10022-:22 \
       -nographic -m 1024 &
-    sleep 20
+    sleep 30
     ssh -o "StrictHostKeyChecking=no" root@localhost -p 10022 'restorecon -Rv /'
     ssh -o "StrictHostKeyChecking=no" root@localhost -p 10022 'poweroff'
 
   artifacts:
     paths:
-      - archlinux.qcow2
+      - archselinux.qcow2
 
 check selinux functionality:
   stage: test_selinux
   script: |
-    qemu-system-x86_64 archlinux.qcow2 \
+    qemu-system-x86_64 archselinux.qcow2 \
       -net nic -net user,hostfwd=tcp::10022-:22 \
       -nographic -m 1024 &
+    sleep 30
     ssh -o "StrictHostKeyChecking=no" root@localhost -p 10022 'ls -laZ /; sestatus'
