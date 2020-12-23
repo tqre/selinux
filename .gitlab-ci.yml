@@ -83,13 +83,13 @@ label the filesystem:
   stage: configure_selinux
   script: |
     ssh-keygen -R [localhost]:10022
-    qemu-img create -f qcow2 -o backing_file=archlinux.qcow2 archselinux.qcow2
+    qemu-img create -f qcow2 -F qcow2 -b archlinux.qcow2 archselinux.qcow2
     qemu-system-x86_64 archselinux.qcow2 \
       -net nic -net user,hostfwd=tcp::10022-:22 \
       -nographic -m 1024 &
     sleep 30
-    ssh -o root@localhost -p 10022 'restorecon -Rv /'
-    ssh -o root@localhost -p 10022 'poweroff'
+    ssh root@localhost -p 10022 'restorecon -Rv /'
+    ssh root@localhost -p 10022 'poweroff'
 
   artifacts:
     paths:
@@ -102,4 +102,4 @@ check selinux functionality:
       -net nic -net user,hostfwd=tcp::10022-:22 \
       -nographic -m 1024 &
     sleep 30
-    ssh -o root@localhost -p 10022 'ls -laZ /; sestatus'
+    ssh root@localhost -p 10022 'ls -laZ /; sestatus'
