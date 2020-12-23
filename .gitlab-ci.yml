@@ -50,22 +50,3 @@ test selinux functionality:
   stage: test_selinux
   script: |
     echo "qemu-system-x86_64"
-
-unmount qemu machine:
-  stage: cleanup
-  when: always
-  allow_failure: true
-  script: |
-    sudo umount /dev/loop0p1
-
-detach loop device:
-  stage: cleanup
-  when: always
-  script: |
-    sudo losetup -d /dev/loop0
-
-clear build directories with root ownership:
-  stage: cleanup
-  when: always
-  script: |
-    echo "rm -rf qemu/"
