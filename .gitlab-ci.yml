@@ -86,4 +86,4 @@ test selinux functionality:
       -nographic -m 1024 &
     sleep 20
     ssh -o "StrictHostKeyChecking=no" root@localhost -p 10022 'ls -la /'
-
+    ssh -o "StrictHostKeyChecking=no" root@localhost -p 10022 'poweroff'
