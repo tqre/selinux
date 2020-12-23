@@ -101,3 +101,4 @@ check selinux functionality:
       -nographic -m 1024 &
     sleep 30
     ssh -o "StrictHostKeyChecking=no" root@localhost -p 10022 'ls -laZ /; sestatus'
+    ssh -o "StrictHostKeyChecking=no" root@localhost -p 10022 'poweroff'
