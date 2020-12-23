@@ -21,7 +21,7 @@ package:
 
 test:
   stage: test
-  before_script: |
+  script: |
     mkdir /tmp/pkgs
     cp pkgs/* /tmp/pkgs
     repo-add /tmp/pkgs/selinux-testing.db.tar.xz /tmp/pkgs/*
@@ -38,10 +38,7 @@ test:
     mkdir /tmp/arch
     sudo mount /dev/loop0p1 /tmp/arch
 
-  script: |
-
     pacstrap -C /tmp/pkgs/pacman.local /tmp/arch base-selinux linux
-
 
 unmount loop devices:
   stage: cleanup
