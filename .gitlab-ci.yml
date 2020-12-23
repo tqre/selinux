@@ -50,10 +50,15 @@ configure qemu image:
   stage: configure_qemu
   script: |
     sudo losetup /dev/loop0 -P archlinux.raw
-    sudo arch-chroot /dev/loop0p1 /bin/bash -c \
+    mkdir mnt
+    sudo mount /dev/loop0p1 /mnt
+    sudo arch-chroot mnt /bin/bash -c \
      'ls -la \;
       whoami;
       pwd'
+
+    sudo umount mnt
+    sudo losetup -d /dev/loop0
 
 test selinux functionality:
   stage: test_selinux
