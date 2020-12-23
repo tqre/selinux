@@ -1,7 +1,6 @@
 stages:
   - build
   - package
-  - public_test_repo
   - test
   - cleanup
 
@@ -20,16 +19,15 @@ package:
     paths:
       - pkgs/*
 
-create public testing repo:
-  stage: public_test_repo
-  script: |
-    rm -vf /srv/http/selinux-testing/*
-    cp -v pkgs/* /srv/http/selinux-testing/
-    repo-add /srv/http/selinux-testing/selinux-testing.db.tar.xz /srv/http/selinux-testing/*
-
-prepare testing:
+test:
   stage: test
-  script: |
+  before_script: |
+    mkdir /tmp/pkgs
+    cp pkgs/* /tmp/pkgs
+    repo-add /tmp/pkgs/selinux-testing.db.tar.xz /tmp/pkgs/*
+    cp /etc/pacman.conf /tmp/pkgs/pacman.local
+    echo -e "[selinux-testing]\nSigLevel = Never\nServer = file:///tmp/pkgs" >> /tmp/pkgs/pacman.local;
+
     qemu-img create -f raw archlinux.raw 8G
     sudo losetup /dev/loop0 -P archlinux.raw
     sudo parted /dev/loop0 mklabel msdos
@@ -37,15 +35,16 @@ prepare testing:
     sudo parted -s /dev/loop0 set 1 boot on
     mkfs.ext4 /dev/loop0p1
     tune2fs -L ROOT /dev/loop0p1
+    mkdir /tmp/arch
     sudo mount /dev/loop0p1 /tmp/arch
 
-build testing environment:
-  stage: test
-  needs: ["prepare testing"]
   script: |
-    curl https://mirror.pkgbuild.com/iso/latest/archlinux-$(date +"%Y.%m.01")-x86_64.iso --output arch.iso
+
+    pacstrap -C /tmp/pkgs/pacman.local /tmp/arch base-selinux linux
+
 
 unmount loop devices:
   stage: cleanup
   script: |
     lsblk
+    ls /tmp
