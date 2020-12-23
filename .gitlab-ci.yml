@@ -37,3 +37,5 @@ prepare testing environment:
     mkfs.ext4 /dev/loop0p1
     tune2fs -L ROOT /dev/loop0p1
     mount /dev/loop0p1 /tmp/arch
+  rules:
+    allow_failure: true
