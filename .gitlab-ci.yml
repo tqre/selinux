@@ -27,7 +27,7 @@ create public testing repo:
     cp -v pkgs/* /srv/http/selinux-testing/
     repo-add /srv/http/selinux-testing/selinux-testing.db.tar.xz /srv/http/selinux-testing/*
 
-prepare testing environment:
+prepare testing:
   stage: test
   script: |
     qemu-img create -f raw archlinux.raw 8G
@@ -41,7 +41,7 @@ prepare testing environment:
 
 build testing environment:
   stage: test
-  needs: prepare testing environment
+  needs: ["prepare testing"]
   script: |
     curl https://mirror.pkgbuild.com/iso/latest/archlinux-$(date +"%Y.%m.01")-x86_64.iso --output arch.iso
 
