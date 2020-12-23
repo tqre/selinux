@@ -24,11 +24,9 @@ package:
 bootstrap qemu image:
   stage: bootstrap_qemu
   script: |
-    mkdir -vp /tmp/pkgs
-    cp -v pkgs/* /tmp/pkgs
-    repo-add /tmp/pkgs/selinux-testing.db.tar.xz /tmp/pkgs/*.zst
-    cp -v /etc/pacman.conf /tmp/pkgs/pacman.local
-    echo -e "[selinux-testing]\nSigLevel = Never\nServer = file:///tmp/pkgs" >> /tmp/pkgs/pacman.local
+    repo-add pkgs/selinux-testing.db.tar.xz pkgs/*.zst
+    cp -v /etc/pacman.conf pacman.local
+    echo -e "[selinux-testing]\nSigLevel = Never\nServer = file:///$(pwd)/pkgs" >> pacman.local
     qemu-img create -f raw archlinux.raw 8G
     sudo losetup /dev/loop0 -P archlinux.raw
     sudo parted /dev/loop0 mklabel msdos
@@ -37,8 +35,8 @@ bootstrap qemu image:
     mkfs.ext4 /dev/loop0p1
     tune2fs -L ROOT /dev/loop0p1
     mkdir qemu
-    sudo mount /dev/loop0p1 qemu arch
-    sudo pacstrap -C /tmp/pkgs/pacman.local qemu base linux
+    sudo mount /dev/loop0p1 qemu/
+    sudo pacstrap -C pacman.local qemu/ base linux
 
 configure qemu image:
   stage: configure_qemu
