@@ -52,6 +52,7 @@ test selinux functionality:
 
 cleanup:
   stage: cleanup
+  when: always
   script: |
     umount /tmp/arch
     losetup -d /dev/loop0
