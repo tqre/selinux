@@ -22,10 +22,10 @@ package:
 test:
   stage: test
   script: |
-    mkdir /tmp/pkgs
-    cp pkgs/* /tmp/pkgs
+    mkdir -vp /tmp/pkgs
+    cp -v pkgs/* /tmp/pkgs
     repo-add /tmp/pkgs/selinux-testing.db.tar.xz /tmp/pkgs/*
-    cp /etc/pacman.conf /tmp/pkgs/pacman.local
+    cp -v /etc/pacman.conf /tmp/pkgs/pacman.local
     echo -e "[selinux-testing]\nSigLevel = Never\nServer = file:///tmp/pkgs" >> /tmp/pkgs/pacman.local;
 
     qemu-img create -f raw archlinux.raw 8G
@@ -43,5 +43,6 @@ test:
 unmount loop devices:
   stage: cleanup
   script: |
+    umount /tmp/arch
+    losetup -d /dev/loop0
     lsblk
-    ls /tmp
