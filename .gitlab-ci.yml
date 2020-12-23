@@ -37,7 +37,6 @@ bootstrap qemu image:
     mkdir qemu
     sudo mount /dev/loop0p1 qemu/
     sudo pacstrap -C pacman.local qemu/ base linux grub
-    sudo genfstab -L qemu/ >> qemu/etc/fstab
     sudo umount /dev/loop0p1
     sudo losetup -d /dev/loop0
     qemu-img convert -f raw -O qcow archlinux.raw archlinux.qcow2
@@ -49,17 +48,9 @@ bootstrap qemu image:
 configure qemu image:
   stage: configure_qemu
   script: |
-    sudo arch-chroot qemu /bin/bash -c \ '
-    ls -la;
-    whoami;
-    pacman -S htop'
+    echo "arch-chroot"
 
 test selinux functionality:
   stage: test_selinux
   script: |
     echo "qemu-system-x86_64"
-
-chown all files for cleanup:
-  stage: cleanup
-  script: |
-    sudo chown gitlab-runner:gitlab-runner -R qemu/
