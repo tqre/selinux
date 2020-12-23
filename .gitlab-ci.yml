@@ -29,7 +29,4 @@ create public testing repo:
 prepare testing environment:
   stage: test
   script: |
-    mkdir -vp /tmp/{boots/{,pkgs},arch}
-    curl https://mirror.pkgbuild.com/iso/latest/archlinux-bootstrap-2020.12.01-x86_64.tar.gz --output archbootstrap.tar.gz
-    tar xf archbootstrap.tar.gz -C /tmp/boots --strip-components 1
-    cp -v pkgs/* /tmp/boots/pkgs
+    curl https://mirror.pkgbuild.com/iso/latest/archlinux-$(date +"%Y.%m.01")-x86_64.iso --output arch.iso
