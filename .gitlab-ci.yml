@@ -90,12 +90,12 @@ label the filesystem:
                  --network none     \
                  --qemu-commandline="-netdev user,id=hostnet0,hostfwd=tcp::10022-:22 -device rtl8139,netdev=hostnet0" \
                  > archselinux.xml
-    cat archselinux.xml
     virsh define archselinux.xml
     virsh start archselinux
     sleep 25
-    ssh -o "StrictHostKeyChecking=no" root@localhost -p 10022 'ls -la /;echo restorecon > test.txt'
+    ssh -o "StrictHostKeyChecking=no" root@localhost -p 10022 'restorecon -Rv /'
     virsh shutdown archselinux
+    sleep 25
     virsh undefine archselinux
   artifacts:
     paths:
@@ -108,6 +108,7 @@ check selinux functionality:
     virsh define archselinux.xml
     virsh start archselinux
     sleep 25
-    ssh -o "StrictHostKeyChecking=no" root@localhost -p 10022 'ls -la /;cat test.txt'
+    ssh -o "StrictHostKeyChecking=no" root@localhost -p 10022 'ls -laZ /;sestatus'
     virsh shutdown archselinux
+    sleep 25
     virsh undefine archselinux
