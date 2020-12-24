@@ -95,7 +95,7 @@ label the filesystem:
     cat archselinux.xml
     virsh define archselinux.xml
     virsh start archselinux
-    sleep 30
+    sleep 25
     ssh -o "StrictHostKeyChecking=no" root@localhost -p 10022 'ls -la /;echo restorecon > test.txt'
     virsh shutdown archselinux
     virsh undefine archselinux
@@ -110,7 +110,7 @@ check selinux functionality:
   script: |
     virsh define archselinux.xml
     virsh start archselinux
-    sleep 30
+    sleep 25
     ssh -o "StrictHostKeyChecking=no" root@localhost -p 10022 'ls -la /;cat test.txt'
     virsh shutdown archselinux
     virsh undefine archselinux
