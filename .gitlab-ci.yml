@@ -36,7 +36,7 @@ bootstrap qemu image:
     sudo tune2fs -L ROOT /dev/loop0p1
     mkdir qemu
     sudo mount /dev/loop0p1 qemu/
-    sudo pacstrap -C pacman.local qemu/ base linux grub openssh
+    sudo pacstrap -C pacman.local qemu/ base-selinux linux grub openssh-selinux
     echo "LABEL=ROOT / ext4 rw,relatime 0 1" > fstab  
     sudo mv fstab qemu/etc/fstab
     sudo umount /dev/loop0p1
