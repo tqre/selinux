@@ -1,7 +1,11 @@
 stages:
   - build
   - package
-  - test
+  - bootstrap_qemu
+  - configure_qemu
+  - configure_selinux
+  - test_selinux
+  - cleanup
 
 build:
   stage: build
@@ -17,9 +21,93 @@ package:
     paths:
       - pkgs/*
 
-test:
-  stage: test
+bootstrap qemu image:
+  stage: bootstrap_qemu
   script: |
-    rm -vf /srv/http/selinux-testing/*
-    cp -v pkgs/* /srv/http/selinux-testing/
-    repo-add /srv/http/selinux-testing/selinux-testing.db.tar.xz /srv/http/selinux-testing/*
+    repo-add pkgs/selinux-testing.db.tar.xz pkgs/*.zst
+    cp -v /etc/pacman.conf pacman.local
+    echo -e "[selinux-testing]\nSigLevel = Never\nServer = file:///$(pwd)/pkgs" >> pacman.local
+    qemu-img create -f raw archlinux.raw 2G
+    sudo losetup /dev/loop0 -P archlinux.raw
+    sudo parted /dev/loop0 mklabel msdos
+    sudo parted -a optimal /dev/loop0 mkpart primary 0% 100%
+    sudo parted -s /dev/loop0 set 1 boot on
+    sudo mkfs -t ext4 /dev/loop0p1
+    sudo tune2fs -L ROOT /dev/loop0p1
+    mkdir qemu
+    sudo mount /dev/loop0p1 qemu/
+    sudo pacstrap -C pacman.local qemu/ base linux grub openssh
+    echo "LABEL=ROOT / ext4 rw,relatime 0 1" > fstab  
+    sudo mv fstab qemu/etc/fstab
+    sudo umount /dev/loop0p1
+    sudo losetup -d /dev/loop0
+  
+  artifacts:
+    paths: 
+      - archlinux.raw
+
+configure qemu image:
+  stage: configure_qemu
+  script: |
+    sudo losetup /dev/loop0 -P archlinux.raw
+    mkdir mnt
+    sudo mount /dev/loop0p1 mnt
+    sudo arch-chroot mnt /bin/bash -c \
+     'ln -sfv /usr/share/zoneinfo/UTC /etc/localtime;
+      hwclock --systohc;
+      sed -i 's/#en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen;
+      locale-gen;
+      echo LANG=en_US.UTF-8 > /etc/locale.conf;
+      echo qemu-arch-selinux > /etc/hostname;
+      echo -e "127.0.0.1 localhost\n::1 localhost" > /etc/hosts;
+      echo -e "[Match]\nName=en*\n[Network]\nDHCP=ipv4" > /etc/systemd/network/dhcp.network;
+      systemctl enable systemd-networkd.service;
+      sed -i "s/#PermitRootLogin prohibit-password/PermitRootLogin yes/" /etc/ssh/sshd_config;
+      sed -i "s/#PermitEmptyPasswords no/PermitEmptyPasswords yes/" /etc/ssh/sshd_config;
+      systemctl enable sshd;
+      sed -i 's/root:x:/root::/' /etc/passwd;
+      grub-install --target=i386-pc /dev/loop0;
+      sed -i 's/GRUB_TIMEOUT=5/GRUB_TIMEOUT=0/' /etc/default/grub;
+      sed -i "/LINUX_DEF/c\GRUB_CMDLINE_LINUX_DEFAULT=\"security=selinux selinux=1 console=ttyS0\"" /etc/default/grub;
+      grub-mkconfig -o /boot/grub/grub.cfg'
+    sudo umount mnt
+    sudo losetup -d /dev/loop0
+    qemu-img convert -f raw -O qcow2 archlinux.raw archlinux.qcow2
+  artifacts:
+    paths:
+      - archlinux.qcow2
+
+label the filesystem:
+  stage: configure_selinux
+  script: |
+    qemu-img create -f qcow2 -F qcow2 -b archlinux.qcow2 archselinux.qcow2
+    virt-install --print-xml        \
+                 --name archselinux \
+                 --import           \
+                 --disk archselinux.qcow2 \
+                 --memory 1024      \
+                 --graphics none    \
+                 --network none     \
+                 --qemu-commandline="-netdev user,id=hostnet0,hostfwd=tcp::10022-:22 -device rtl8139,netdev=hostnet0" \
+                 > archselinux.xml
+    cat archselinux.xml
+    virsh define archselinux.xml
+    virsh start archselinux
+    sleep 25
+    ssh -o "StrictHostKeyChecking=no" root@localhost -p 10022 'ls -la /;echo restorecon > test.txt'
+    virsh shutdown archselinux
+    virsh undefine archselinux
+  artifacts:
+    paths:
+      - archselinux.qcow2
+      - archselinux.xml
+
+check selinux functionality:
+  stage: test_selinux
+  script: |
+    virsh define archselinux.xml
+    virsh start archselinux
+    sleep 25
+    ssh -o "StrictHostKeyChecking=no" root@localhost -p 10022 'ls -la /;cat test.txt'
+    virsh shutdown archselinux
+    virsh undefine archselinux
