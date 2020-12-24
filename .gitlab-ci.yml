@@ -98,6 +98,7 @@ label the filesystem:
     sleep 25
     ssh -o "StrictHostKeyChecking=no" root@localhost -p 10022 'ls -la /;echo restorecon > test.txt'
     virsh shutdown archselinux
+    sleep 25
     virsh undefine archselinux
 
   artifacts:
@@ -113,5 +114,6 @@ check selinux functionality:
     sleep 25
     ssh -o "StrictHostKeyChecking=no" root@localhost -p 10022 'ls -la /;cat test.txt'
     virsh shutdown archselinux
+    sleep 25
     virsh undefine archselinux
     
