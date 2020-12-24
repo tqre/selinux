@@ -18,6 +18,10 @@ package:
     mkdir pkgs
     docker run -v "$(pwd)/pkgs:/packages" --rm arch-selinux-build
 
+  artifacts:
+    paths:
+      - pkgs/*
+
 bootstrap qemu image:
   stage: bootstrap_qemu
   script: |
