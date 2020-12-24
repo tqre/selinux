@@ -84,7 +84,7 @@ label the filesystem:
   script: |
     qemu-img create -f qcow2 -F qcow2 -b archlinux.qcow2 archselinux.qcow2
     virt-install --print-xml        \
-                 --name search      \
+                 --name archselinux \
                  --import           \
                  --disk archselinux.qcow2 \
                  --memory 1024      \
