@@ -89,6 +89,7 @@ label the filesystem:
       -nographic -m 1024 &
     sleep 30
     ssh -o "StrictHostKeyChecking=no" root@localhost -p 10022 'ls -la /;echo restorecon > test.txt; poweroff'
+    sleep 10
 
   artifacts:
     paths:
@@ -103,3 +104,4 @@ check selinux functionality:
       -nographic -m 1024 &
     sleep 30
     ssh -o "StrictHostKeyChecking=no" root@localhost -p 10022 'ls -laZ /; cat test.txt; poweroff'
+    sleep 10
