@@ -93,6 +93,7 @@ label the filesystem:
                  --qemu-commandline="-netdev user,id=hostnet0,hostfwd=tcp::10022-:22 -device rtl8139,netdev=hostnet0" > archselinux.xml                 
     virsh define archselinux.xml
     virsh start archselinux
+    sleep 30
     ssh -o "StrictHostKeyChecking=no" root@localhost -p 10022 'ls -la /;echo restorecon > test.txt'
     virsh shutdown archselinux
     virsh undefine archselinux
@@ -105,9 +106,10 @@ label the filesystem:
 check selinux functionality:
   stage: test_selinux
   script: |
-    qemu-system-x86_64 archselinux.qcow2 \
-      -net nic -net user,hostfwd=tcp::10022-:22 \
-      -nographic -m 1024 &
+    virsh define archselinux.xml
+    virsh start archselinux
     sleep 30
-    ssh -o "StrictHostKeyChecking=no" root@localhost -p 10022 'ls -laZ /; cat test.txt; poweroff'
-    sleep 10
+    ssh -o "StrictHostKeyChecking=no" root@localhost -p 10022 'ls -la /;cat test.txt'
+    virsh shutdown archselinux
+    virsh undefine archselinux
+    
