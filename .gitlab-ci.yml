@@ -88,7 +88,7 @@ label the filesystem:
       -net nic -net user,hostfwd=tcp::10022-:22 \
       -nographic -m 1024 &
     sleep 30
-    ssh -o "StrictHostKeyChecking=no" root@localhost -p 10022 'ls -la /; poweroff'
+    ssh -o "StrictHostKeyChecking=no" root@localhost -p 10022 'ls -la /;echo restorecon > test.txt; poweroff'
 
   artifacts:
     paths:
@@ -102,4 +102,4 @@ check selinux functionality:
       -net nic -net user,hostfwd=tcp::10022-:22 \
       -nographic -m 1024 &
     sleep 30
-    ssh -o "StrictHostKeyChecking=no" root@localhost -p 10022 'ls -laZ /; sestatus; poweroff'
+    ssh -o "StrictHostKeyChecking=no" root@localhost -p 10022 'ls -laZ /; cat test.txt; poweroff'
