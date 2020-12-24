@@ -88,8 +88,7 @@ label the filesystem:
       -net nic -net user,hostfwd=tcp::10022-:22 \
       -nographic -m 1024 &
     sleep 30
-    ssh -o "StrictHostKeyChecking=no" root@localhost -p 10022 'ls -la /;echo restorecon > test.txt; poweroff'
-    sleep 10
+    ssh -o "StrictHostKeyChecking=no" root@localhost -p 10022 'ls -la /;echo restorecon > test.txt'
 
   artifacts:
     paths:
