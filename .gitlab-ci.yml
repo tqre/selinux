@@ -5,6 +5,7 @@ stages:
   - configure_qemu
   - configure_selinux
   - test_selinux
+  - release
   - cleanup
 
 build:
@@ -112,3 +113,10 @@ check selinux functionality:
     virsh shutdown archselinux
     sleep 25
     virsh undefine archselinux
+
+move package repository files to public directory:
+  stage: release
+  script: |
+    rm -vf /srv/http/selinux-testing/*
+    cp -v pkgs/* /srv/http/selinux-testing/
+    repo-add /srv/http/selinux-testing/selinux-testing.db.tar.xz /srv/http/selinux-testing/*
