@@ -12,10 +12,13 @@ jobs:
       image: archlinux/archlinux:latest
       options: --privileged
       volumes:
-        - $(pwd)/pkgs:/packages
+        - pkgs:/packages
 
     steps:
       - uses: actions/checkout@v2
+
+      - name: test
+        run:      
 
       - name: testing
         run: |
