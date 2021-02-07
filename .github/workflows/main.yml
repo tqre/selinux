@@ -31,7 +31,7 @@ jobs:
           echo 'MAKEFLAGS="-j$(nproc)"' >> /etc/makepkg.conf && \
           echo 'BUILDDIR=/build' >> /etc/makepkg.conf && \
           echo 'LOGDEST=/logdest' >> /etc/makepkg.conf && \
-          mkdir /packages /build /logdest && \
+          mkdir -vp /packages /build /logdest && \
           chown -R builduser /startdir /packages /build /logdest && \
           sudo -u builduser /startdir/clean.sh && \
           sudo -u builduser /startdir/recv_gpg_keys.sh && \
