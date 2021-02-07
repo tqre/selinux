@@ -11,8 +11,6 @@ jobs:
     container: 
       image: archlinux/archlinux:latest
       options: --privileged
-      volumes:
-        - /packages:pkgs
 
     steps:
       - uses: actions/checkout@v2
@@ -50,5 +48,5 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Arch Linux packages for SELinux support
-          path: pkgs
+          path: packages
 
