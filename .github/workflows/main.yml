@@ -38,7 +38,7 @@ jobs:
           sudo -u builduser /startdir/build_and_install_all.sh && \
           rm -rf /startdir/*/src/ /startdir/*/pkg/ && \
           pacman --noconfirm -Sc && rm -rf /var/cache/pacman/pkg/* && \
-          cp /startdir/*/*.pkg.tar.zst /packages/
+          ls /
 
 #      - name: Build and install Arch Linux's SELinux support packages in a docker container
 #        run: docker build -t arch-selinux-build . --security-opt seccomp=unconfined
