@@ -48,5 +48,5 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Arch Linux packages for SELinux support
-          path: packages
+          path: /packages
 
