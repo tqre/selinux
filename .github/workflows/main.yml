@@ -17,11 +17,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: test
-      - runs-on: ubuntu-18.04
-        run: |
-          pwd               
-
       - name: testing
         run: |
           mkdir -vp /startdir && \
