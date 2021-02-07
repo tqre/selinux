@@ -12,7 +12,7 @@ jobs:
       image: archlinux/archlinux:latest
       options: --privileged
       volumes:
-        - pkgs:/packages
+        - /packages:pkgs
 
     steps:
       - uses: actions/checkout@v2
