@@ -8,7 +8,8 @@ on:
 jobs:
   build_all_packages:
     runs-on: ubuntu-18.04
-    container: archlinux/archlinux:latest
+    container: Dockerfile
+
     steps:
       - uses: actions/checkout@v2
 
