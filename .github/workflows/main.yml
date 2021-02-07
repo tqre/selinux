@@ -17,6 +17,8 @@ jobs:
 
       - name: testing
         run: |
+          pwd && \
+          ls -la && \
           pacman -q --noconfirm -Syu base base-devel expect git && \
           pacman --noconfirm -Sc && \
           rm -rf /var/cache/pacman/pkg/* && \
