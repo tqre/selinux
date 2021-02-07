@@ -8,7 +8,9 @@ on:
 jobs:
   build_all_packages:
     runs-on: ubuntu-18.04
-    container: Dockerfile
+    container: 
+      image: archlinux/archlinux:latest
+      options: --security-opt unconfined
 
     steps:
       - uses: actions/checkout@v2
