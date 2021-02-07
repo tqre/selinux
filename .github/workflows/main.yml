@@ -11,6 +11,8 @@ jobs:
     container: 
       image: archlinux/archlinux:latest
       options: --privileged
+      volumes:
+        - /packages:$(pwd)/pkgs
 
     steps:
       - uses: actions/checkout@v2
@@ -35,7 +37,9 @@ jobs:
           sudo -u builduser /startdir/recv_gpg_keys.sh && \
           sudo -u builduser /startdir/build_and_install_all.sh && \
           rm -rf /startdir/*/src/ /startdir/*/pkg/ && \
-          pacman --noconfirm -Sc && rm -rf /var/cache/pacman/pkg/*
+          pacman --noconfirm -Sc && rm -rf /var/cache/pacman/pkg/* && \
+          mkdir -vp /packages && \
+          cp /startdir/*/*.pkg.tar.zst /packages
 
 #      - name: Build and install Arch Linux's SELinux support packages in a docker container
 #        run: docker build -t arch-selinux-build . --security-opt seccomp=unconfined
@@ -43,9 +47,9 @@ jobs:
 #      - name: Run the container - built packages are transferred to build host
 #        run: docker run -v "$(pwd)/pkgs:/packages" --rm arch-selinux-build
 #
-#      - name: Upload packages as artifacts
-#        uses: actions/upload-artifact@v2
-#        with:
-#          name: Arch Linux packages for SELinux support
-#          path: pkgs
+      - name: Upload packages as artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: Arch Linux packages for SELinux support
+          path: pkgs
 
