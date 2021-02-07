@@ -14,7 +14,7 @@ jobs:
 
       - name: testing
         run: |
-          docker images
+          ls -la
 
 #      - name: Build and install Arch Linux's SELinux support packages in a docker container
 #        run: docker build -t arch-selinux-build . --security-opt seccomp=unconfined
