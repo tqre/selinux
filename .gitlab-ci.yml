@@ -26,7 +26,6 @@ bootstrap qemu image:
   stage: bootstrap_qemu
   script: |
     repo-add pkgs/selinux-testing.db.tar.xz pkgs/*.zst
-    cp -v /etc/pacman.conf pacman.local
     echo -e "[selinux-testing]\nSigLevel = Never\nServer = file:///$(pwd)/pkgs" >> pacman.local
     qemu-img create -f raw archlinux.raw 2G
     sudo losetup /dev/loop0 -P archlinux.raw
